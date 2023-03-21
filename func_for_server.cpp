@@ -1,4 +1,5 @@
 #include "func_for_server.h"
+#include "qdebug.h"
 
 QByteArray parsing(QString str)
 {
@@ -20,6 +21,7 @@ QByteArray auth(QStringList str) {
     QByteArray response;
     // код для проверки
     response.append("qwertyuio");
+
     return response;
 }
 

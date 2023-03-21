@@ -46,9 +46,9 @@ void MyTcpServer::slotServerRead(){
     array="";
     array.append(str.toUtf8());
 
-    QByteArray sub = array.left(str.size() - 2);
-    qDebug()<<sub;
-    curr_mTcpSocket->write(parsing(sub));
+    QByteArray task = array.left(str.size() - 2);
+    qDebug()<<task;
+    curr_mTcpSocket->write(parsing(task));
 }
 
 void MyTcpServer::slotClientDisconnected(){

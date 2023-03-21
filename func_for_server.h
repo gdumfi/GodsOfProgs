@@ -4,6 +4,7 @@
 #include <QString>
 #include <QList>
 #include <QStringList>
+#include <QDebug>
 QByteArray parsing(QString str);
 
 QByteArray auth(QStringList str);
