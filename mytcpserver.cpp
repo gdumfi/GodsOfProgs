@@ -35,12 +35,20 @@ void MyTcpServer::slotNewConnection(){
 }
 
 void MyTcpServer::slotServerRead(){
+    QByteArray array;
+    QString str;
     QTcpSocket* curr_mTcpSocket = (QTcpSocket*)sender();
     while(curr_mTcpSocket->bytesAvailable()>0)
     {
-        QByteArray array =curr_mTcpSocket->readAll();
-        curr_mTcpSocket->write(array);
+       array.append(curr_mTcpSocket->readAll());
+       str+=array;
     }
+    array="";
+    array.append(str.toUtf8());
+
+    QByteArray sub = array.left(str.size() - 2);
+    qDebug()<<sub;
+    curr_mTcpSocket->write(parsing(sub));
 }
 
 void MyTcpServer::slotClientDisconnected(){

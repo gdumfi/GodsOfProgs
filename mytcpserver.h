@@ -7,8 +7,8 @@
 #include <QtNetwork>
 #include <QByteArray>
 #include <QDebug>
-#include <Qlist>
-
+#include <QList>
+#include <func_for_server.h>
 class MyTcpServer : public QObject
 {
     Q_OBJECT
@@ -23,7 +23,7 @@ public slots:
     //void slotReadClient();
 private:
     QTcpServer * mTcpServer;
-    Qlist<QTcpSocket> * mTcpSocket;
+    QList<QTcpSocket*> mTcpSocket;
     int server_status;
 };
 #endif // MYTCPSERVER_H
