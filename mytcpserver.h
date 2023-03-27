@@ -9,6 +9,10 @@
 #include <QDebug>
 #include <QList>
 #include <func_for_server.h>
+
+#include <QSqlDatabase>
+#include <QDebug>
+#include <QSqlQuery>
 class MyTcpServer : public QObject
 {
     Q_OBJECT
@@ -25,5 +29,10 @@ private:
     QTcpServer * mTcpServer;
     QList<QTcpSocket*> mTcpSocket;
     int server_status;
+    QSqlDatabase db;
+    QSqlQuery *query;
+
 };
+
+
 #endif // MYTCPSERVER_H

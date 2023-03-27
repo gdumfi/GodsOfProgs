@@ -19,6 +19,22 @@ MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent){
         server_status=1;
         qDebug() << "server is started";
     }
+
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("./testDB.db");
+    if (db.open())
+    {
+        qDebug("open");
+
+    }
+    else
+    {
+        qDebug("close");
+    }
+
+    query = new QSqlQuery(db);
+    query -> exec("CREATE TABLE AUTH (FIO TEXT, EMAIL TEXT, PASSWORD TEXT)");
+
 }
 
 void MyTcpServer::slotNewConnection(){
@@ -48,7 +64,9 @@ void MyTcpServer::slotServerRead(){
 
     QByteArray task = array.left(str.size() - 2);
     qDebug()<<task;
-    curr_mTcpSocket->write(parsing(task));
+    QByteArray a;
+    a = parsing(task);
+    curr_mTcpSocket->write(a);
 }
 
 void MyTcpServer::slotClientDisconnected(){
@@ -56,3 +74,4 @@ void MyTcpServer::slotClientDisconnected(){
     curr_mTcpSocket->close();
     curr_mTcpSocket->deleteLater();
 }
+
