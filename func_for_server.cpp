@@ -15,6 +15,8 @@ QByteArray parsing(QString str)
         return checktask(params);
     else if (func_name == "stat")
         return stat(params);
+    else
+        return "Error";
 }
 
 QByteArray auth(QStringList str) {

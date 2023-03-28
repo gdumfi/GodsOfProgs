@@ -8,6 +8,7 @@ MyTcpServer::~MyTcpServer()
     mTcpServer->close();
     server_status=0;
 }
+//штука с сокетами
 MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent){
     mTcpServer = new QTcpServer(this);
     connect(mTcpServer, &QTcpServer::newConnection,
@@ -19,8 +20,8 @@ MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent){
         server_status=1;
         qDebug() << "server is started";
     }
-
-    db = QSqlDatabase::addDatabase("QSQLITE");
+//штука с бд
+ /*   db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("./testDB.db");
     if (db.open())
     {
@@ -34,10 +35,11 @@ MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent){
 
     query = new QSqlQuery(db);
     query -> exec("CREATE TABLE AUTH (FIO TEXT, EMAIL TEXT, PASSWORD TEXT)");
-
+*/
 }
 
 void MyTcpServer::slotNewConnection(){
+    //коннекты
     if(server_status==1){
         QTcpSocket* curr_mTcpSocket;
         curr_mTcpSocket = mTcpServer->nextPendingConnection();
@@ -61,15 +63,17 @@ void MyTcpServer::slotServerRead(){
     }
     array="";
     array.append(str.toUtf8());
-
-    QByteArray task = array.left(str.size() - 2);
+//нэробит почему то
+    QString task = array.left(str.size() - 2);
     qDebug()<<task;
     QByteArray a;
     a = parsing(task);
+    qDebug()<<a;
     curr_mTcpSocket->write(a);
 }
-
+//диконнеты
 void MyTcpServer::slotClientDisconnected(){
+
     QTcpSocket* curr_mTcpSocket = (QTcpSocket*)sender();
     curr_mTcpSocket->close();
     curr_mTcpSocket->deleteLater();

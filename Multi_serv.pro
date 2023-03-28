@@ -11,7 +11,6 @@ QT += sql
 SOURCES += \
         func_for_server.cpp \
         main.cpp \
-        mysingleton.cpp \
         mytcpserver.cpp
 
 # Default rules for deployment.
@@ -21,5 +20,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     func_for_server.h \
-    mysingleton.h \
     mytcpserver.h
