@@ -10,9 +10,6 @@
 #include <QList>
 #include <func_for_server.h>
 
-#include <QSqlDatabase>
-#include <QDebug>
-#include <QSqlQuery>
 class MyTcpServer : public QObject
 {
     Q_OBJECT
