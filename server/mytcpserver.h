@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
-
+#include "singletondb.h"
 #include <QtNetwork>
 #include <QByteArray>
 #include <QDebug>
