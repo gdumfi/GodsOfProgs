@@ -79,3 +79,17 @@ void MyTcpServer::slotClientDisconnected(){
     curr_mTcpSocket->deleteLater();
 }
 
+void connectiontodb()
+{
+    db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("DRIVER = {SQL Server}; SERVER = (127.0.0.1); DATABASE = (sqlite)")
+    if (db.open)
+    {
+        qDebug()<<"opened";
+    }
+    else
+    {
+        qDebug()<<"closed";
+    }
+}
+
