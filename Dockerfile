@@ -1,10 +1,18 @@
-WORKDIR C:\Users\gdumf\Desktop\proj\GodsOfProgs
+FROM ubuntu
 
-COPY *.cpp C:\Users\gdumf\Desktop\proj\GodsOfProgs
-COPY *.h C:\Users\gdumf\Desktop\proj\GodsOfProgs
-COPY *.pro C:\Users\gdumf\Desktop\proj\GodsOfProgs
+ENV TZ=Europe/Moscow
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-RUN qmake Multy_serv.pro
+RUN apt-get update
+RUN apt-get install qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools -y
+RUN apt-get install build-essential -y
+
+WORKDIR /root/
+RUN mkdir server
+WORKDIR /root/server/
+COPY * /root/server/
+
+RUN qmake Multi_serv.pro
 RUN make
 
-ENTRYPOINT [".\Multy_serv"]
+ENTRYPOINT [".\main"]
