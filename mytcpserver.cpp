@@ -8,8 +8,7 @@ MyTcpServer::~MyTcpServer()
 //штука с сокетами
 MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent){
     mTcpServer = new QTcpServer(this);
-    connect(mTcpServer, &QTcpServer::newConnection,
-            this, &MyTcpServer::slotNewConnection);
+    connect(mTcpServer, &QTcpServer::newConnection,this, &MyTcpServer::slotNewConnection);
 
     if(!mTcpServer->listen(QHostAddress::Any, 33333)){
         qDebug() << "server is not started";
@@ -22,9 +21,8 @@ MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent){
 void MyTcpServer::slotNewConnection(){
     //коннекты
     if(server_status==1){
-        QTcpSocket* curr_mTcpSocket;
-        curr_mTcpSocket = mTcpServer->nextPendingConnection();
-        curr_mTcpSocket->write("Hello, World!!! I am echo server!\r\n");
+        QTcpSocket* curr_mTcpSocket = mTcpServer->nextPendingConnection();
+        //curr_mTcpSocket->write("Hello, World!!! I am echo server!\r\n");
         connect(curr_mTcpSocket, &QTcpSocket::readyRead,
                 this,&MyTcpServer::slotServerRead);
         connect(curr_mTcpSocket,&QTcpSocket::disconnected,
@@ -34,22 +32,40 @@ void MyTcpServer::slotNewConnection(){
 }
 
 void MyTcpServer::slotServerRead(){
-    QByteArray array;
-    QString str;
-    QTcpSocket* curr_mTcpSocket = (QTcpSocket*)sender();
-    while(curr_mTcpSocket->bytesAvailable()>0)
-    {
-       array.append(curr_mTcpSocket->readAll());
-       str+=array;
+
+    /*QByteArray array;
+    array.clear();
+    QTcpSocket* curr_mTcpSocket = qobject_cast<QTcpSocket*>(sender());
+    qDebug()<<"То, что в сокете до отправки в массив "<< curr_mTcpSocket->readAll();
+    while (curr_mTcpSocket->bytesAvailable() > 0) {
+        array.append(curr_mTcpSocket->readAll());
     }
-    array="";
-    array.append(str.toUtf8());
-    QString task = array.left(str.size() - 2);
-    qDebug()<<task;
-    QByteArray a;
-    a = parsing(task);
-    qDebug()<<a;
-    curr_mTcpSocket->write(a);
+    qDebug()<<"Массивпосле считывания из сокета "<< array;
+    QString task;
+    task.clear();
+    task = QString::fromUtf8(array);
+    qDebug() << task;
+    QByteArray a = parsing(task, *curr_mTcpSocket);
+    qDebug() << a;
+    curr_mTcpSocket->write(a);*/
+    QByteArray array;
+    QTcpSocket* curr_mTcpSocket = qobject_cast<QTcpSocket*>(sender());
+    qDebug()<<"То, что в сокете до отправки в массив "<< curr_mTcpSocket->peek(curr_mTcpSocket->bytesAvailable());
+    if (curr_mTcpSocket->bytesAvailable() > 0) {
+        array.clear();
+        array = curr_mTcpSocket->readAll();
+        qDebug()<<"Массивпосле считывания из сокета "<< array;
+        QString task;
+        task.clear();
+        task = QString::fromUtf8(array);
+        qDebug() << task;
+        QByteArray a;
+        a.clear();
+        a = parsing(task, *curr_mTcpSocket);
+        qDebug() << a;
+        curr_mTcpSocket->write(a);
+        qDebug()<<"Правильно:  "<<curr_mTcpSocket->peek(curr_mTcpSocket->bytesAvailable());
+    }
 }
 //диконнеты
 void MyTcpServer::slotClientDisconnected(){

@@ -13,7 +13,7 @@ void SingletonDBDestroyer::initialize(SingletonDB * p)
 SingletonDB::SingletonDB()
 {
     db = QSqlDatabase::addDatabase("QSQLITE");
-        db.setDatabaseName("../sqlite_users_db.db");
+        db.setDatabaseName("C:/Univercity/QT_server/GodsOfProgs1/GodsOfProgs/sqlite_users_db.db");
 }
 
 bool SingletonDB::openDB()
@@ -43,6 +43,7 @@ QString SingletonDB::queryToDB(QString query)
             result = sqlQuery.value(0).toString();
         }
         return result;
+
 }
 
 
