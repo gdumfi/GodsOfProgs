@@ -11,7 +11,7 @@
 
 1. Склонируйте репозиторий с проектом на вашу локальную машину:
 ```sh
-git clone https://github.com/your-username/GodOfProgs.git
+git clone https://github.com/gdumfi/GodsOfProgs
 ```
 2. Откройте файл Multi_serv.pro в Qt Creator или другой среде разработки, поддерживающей Qt проекты.
 3. Соберите и запустите серверную часть проекта. Убедитесь, что все зависимости успешно установлены и настроены.
