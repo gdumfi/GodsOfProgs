@@ -31,9 +31,12 @@ private:
     Ui::MathematicalTasks *ui;
     MathematicalTasks *MathematicalTasksWindow;
     Stat *stat;
-
+    QStringList params; // Это будет список правильных ответов, с которыми будут сравниваться ответы пользователей
+    QStringList random;
 
     void resolve_stat();
+    void getanswers();
+    QString gettask(int num);
 
 signals:
     void signal1(QString answer);

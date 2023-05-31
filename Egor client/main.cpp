@@ -1,10 +1,31 @@
-#include <mainwindow.h>>
-#include <QApplication>
+/**
+ * \file
+ * \brief Главный файл приложения
+ *
+ * Этот файл содержит функцию `main`, которая является точкой входа в приложение.
+ */
 
+#include <mainwindow.h>  // Подключение заголовочного файла "mainwindow.h"
+
+#include <QApplication>  // Подключение заголовочного файла "QApplication"
+
+/**
+ * \brief Точка входа в приложение
+ *
+ * Функция `main` является точкой входа в приложение. Она создает объект приложения QApplication,
+ * объект главного окна MainWindow и запускает главный цикл приложения.
+ *
+ * \param argc Количество аргументов командной строки
+ * \param argv Массив аргументов командной строки
+ * \return Код возврата приложения
+ */
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
-    return a.exec();
+    QApplication a(argc, argv);  // Создание объекта приложения QApplication с передачей аргументов командной строки
+
+    MainWindow w;  // Создание объекта главного окна MainWindow
+
+    w.show();  // Отображение главного окна на экране
+
+    return a.exec();  // Запуск главного цикла приложения и возврат результата
 }
