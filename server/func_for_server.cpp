@@ -132,41 +132,157 @@ QString third_task(const QString& a) {
     return mdnf;
 }
 
-
-
-QString fourth_task(const QString& a)
+QString fourth_task( const QString& a)
 {
-    QStringList values = a.split(';'); // Разделяем строку на значения
-    int numVariables = static_cast<int>(log2(values.size())); // Определяем количество переменных
-    int numMinterms = values.size(); // Определяем количество мономов
+    auto numVariables = [&](QString values) {
+        int n = log2(values.size());
+        return n;
+    };
 
-    QStringList minterms;
+    // Генерация таблицы истинности для заданного числа переменных
+    auto generateTruthTable = [&](QString values) {
+        int n = numVariables(values);
+        QVector<QString> truthTable;
 
-    // Проходимся по всем значениям и добавляем их в список мономов
-    for (int i = 0; i < numMinterms; i++) {
-        int value = values[i].toInt();
-        if (value == 1) {
-            QString minterm = "";
-            QString binary = QString::number(i, 2);
-            while (binary.length() < numVariables) {
-                binary = "0" + binary;
-            }
-            for (int j = 0; j < numVariables; j++) {
-                if (binary[j] == '0') {
-                    minterm += QString("x%1'").arg(j + 1); // Добавляем переменную со знаком отрицания
-                } else {
-                    minterm += QString("x%1").arg(j + 1); // Добавляем переменную
+        int numCombinations = 1 << n; // Количество комбинаций равно 2^количество переменных
+
+        for (int i = 0; i < numCombinations; i++) {
+            QString binaryString(n, '0');
+            for (int j = 0; j < n; j++) {
+                if ((i >> j) & 1) {
+                    binaryString[n - j - 1] = '1';
                 }
             }
-            minterms.append(minterm);
+            truthTable.push_back(binaryString);
         }
+
+        return truthTable;
+    };
+
+    // Получение минтермов на основе таблицы истинности и значений функции
+    auto getMinterms = [&](const QVector<QString>& truthTable, const QString& functionValues) {
+        QVector<QString> minterms;
+
+        for (auto i = 0; i < truthTable.size(); i++) {
+            if (functionValues[i] == '1') {
+                minterms.push_back(truthTable[i]);
+            }
+        }
+
+        return minterms;
+    };
+
+    // Комбинирование двух минтермов, если они отличаются только в одном разряде
+    auto combineMinterms = [&](QString& minterm1, QString& minterm2) {
+        size_t differingIndex = -1;
+        int differingCount = 0;
+
+        for (auto i = 0; i < minterm1.size(); i++) {
+            if (minterm1[i] != minterm2[i]) {
+                differingIndex = i;
+                differingCount++;
+            }
+        }
+
+        if (differingCount != 1) {
+            return false;
+        }
+
+        minterm1[differingIndex] = '-';
+        minterm2[differingIndex] = '-';
+
+        return true;
+    };
+
+    // Выполнение алгоритма Квайна-МакКласки для получения первичных импликант
+    auto performQuineMcCluskey = [&](const QVector<QString>& minterms) {
+        QVector<QString> primeImplicants = minterms;
+        QVector<QString> essentialPrimeImplicants;
+
+        bool combined = true;
+
+        while (combined) {
+            combined = false;
+            QVector<QString> newPrimeImplicants;
+
+            for (auto i = 0; i < primeImplicants.size(); i++) {
+                for (auto j = i + 1; j < primeImplicants.size(); j++) {
+                    if (combineMinterms(primeImplicants[i], primeImplicants[j])) {
+                        combined = true;
+                    }
+                }
+
+                if (combined) {
+                    newPrimeImplicants.push_back(primeImplicants[i]);
+                } else {
+                    essentialPrimeImplicants.push_back(primeImplicants[i]);
+                }
+            }
+
+            primeImplicants = newPrimeImplicants;
+        }
+
+        QVector<QString> mknf;
+
+        for (const QString& minterm : essentialPrimeImplicants) {
+            QString literals = "";
+
+            for (auto i = 0; i < minterm.size(); i++) {
+                if (minterm[i] == '0') {
+                    literals += "~A" + std::to_string(i + 1) + "+";
+                } else if (minterm[i] == '1') {
+                    if (i == 0) {
+                        literals += "A" + std::to_string(i + 3) + "+";
+                    } else if (i == 2) {
+                        literals += "A" + std::to_string(i - 1) + "+";
+                    }
+                }
+            }
+
+            literals.chop(1); // Удаляем последнюю звездочку
+
+            // Добавляем уникальный литерал в результат
+            if (std::find(mknf.begin(), mknf.end(), literals) == mknf.end()) {
+                mknf.append(literals);
+            }
+        }
+
+        // Удаляем повторяющиеся элементы из МКНФ
+        std::sort(mknf.begin(), mknf.end());
+        auto last = std::unique(mknf.begin(), mknf.end());
+        mknf.erase(last, mknf.end());
+
+        return mknf;
+    };
+
+    auto removeEveryOther = [&](QString v) {
+        for (int i = v.size() - 2; i >= 0; i -= 2) {
+            v.removeAt(i);
+        }
+        return v;
+    };
+
+    QString values = removeEveryOther(a);
+
+    QVector<QString> truthTable = generateTruthTable(values);
+    QVector<QString> minterms = getMinterms(truthTable, values);
+    QVector<QString> mknf = performQuineMcCluskey(minterms);
+
+    QString mknf_strn = "";
+
+    for (auto i = 1; i < mknf.size(); i++) {
+        if (i > 1) {
+            mknf_strn = mknf_strn + ")";
+        }
+        mknf_strn = mknf_strn + "(" + mknf[i];
     }
-
-    QString mknf = minterms.join(" + "); // Объединяем мономы с помощью логической операции ИЛИ
-
-    return mknf;
+    mknf_strn = mknf_strn + ")";
+    return mknf_strn;
 }
 
+    //1110110101110011
+    //11101011
+    //"(!x3+!x1+x4)*(!x3+x2)*(x1+x3)*(x2+!x1+x4)"
 
 /**
  * @brief Функция авторизации пользователя.
@@ -265,3 +381,12 @@ QByteArray resolve(QStringList str, QTcpSocket& a) {
     qDebug()<<"Статистика успешно получена.";
     return response;
 }
+
+
+
+
+
+
+/*
+ *
+ */
