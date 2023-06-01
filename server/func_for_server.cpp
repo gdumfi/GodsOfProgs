@@ -381,12 +381,3 @@ QByteArray resolve(QStringList str, QTcpSocket& a) {
     qDebug()<<"Статистика успешно получена.";
     return response;
 }
-
-
-
-
-
-
-/*
- *
- */
