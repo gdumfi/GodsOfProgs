@@ -131,8 +131,15 @@ QString second_task(const QString& a)
 
 QString third_task(const QString& a) 
 {
+
+    auto numVariables = [&](QString values) 
+    {
+        int n = log2(values.size());
+        return n;
+    };
+
     // Генерация таблицы истинности для заданного числа переменных
-    QStringList generateTruthTable(int numVariables)
+    auto generateTruthTable = [&](int numVariables)
     {
         QStringList truthTable;
 
@@ -145,10 +152,10 @@ QString third_task(const QString& a)
         }
 
         return truthTable;
-    }
+    };
 
     // Получение минтермов на основе таблицы истинности и значений функции
-    QStringList getMinterms(const QStringList& truthTable, const QString& functionValues)
+    auto getMinterms = [&](const QStringList& truthTable, const QString& functionValues)
     {
         QStringList minterms;
 
@@ -161,10 +168,10 @@ QString third_task(const QString& a)
         }
 
         return minterms;
-    }
+    };
 
     // Комбинирование двух минтермов, если они отличаются только в одном разряде
-    bool combineMinterms(QString& minterm1, QString& minterm2)
+    auto combineMinterms = [&](QString& minterm1, QString& minterm2)
     {
         int differingIndex = -1;
         int differingCount = 0;
@@ -187,10 +194,10 @@ QString third_task(const QString& a)
         minterm2[differingIndex] = '-';
 
         return true;
-    }
+    };
 
     // Выполнение алгоритма Квайна-МакКласки для получения первичных импликант
-    QStringList performQuineMcCluskey(const QStringList& minterms)
+    auto performQuineMcCluskey = [&](const QStringList& minterms)
     {
         QStringList primeImplicants = minterms;
         QStringList essentialPrimeImplicants;
@@ -248,28 +255,29 @@ QString third_task(const QString& a)
         }
 
         return mdnf;
-    }
+    };
 
-    int main(int argc, char *argv[])
-    {
-        QCoreApplication a(argc, argv);
+    auto removeEveryOther = [&](QString v) {
+        for (int i = v.size() - 2; i >= 0; i -= 2) {
+            v.removeAt(i);
+        }
+        return v;
+    };
 
-        QString functionValues = "1110";
+    QString values = removeEveryOther(a);
 
-        int numVariables = 2;
+    int num = numVariables(a);
 
-        QStringList truthTable = generateTruthTable(numVariables);
+    QStringList truthTable = generateTruthTable(num);
 
-        QStringList minterms = getMinterms(truthTable, functionValues);
-        QStringList mdnf = performQuineMcCluskey(minterms);
+    QStringList minterms = getMinterms(truthTable, a);
+    QStringList mdnf = performQuineMcCluskey(minterms);
 
-        QSet<QString> uniq = QSet<QString>(mdnf.begin(), mdnf.end());
-        QStringList uniqList = QStringList(uniq.begin(), uniq.end());
+    QSet<QString> uniq = QSet<QString>(mdnf.begin(), mdnf.end());
+    QStringList uniqList = QStringList(uniq.begin(), uniq.end());
 
-        qDebug() << "МДНФ:" << uniqList.join(" || ");
-
-        return a.exec();
-    }
+    QString m = uniqList.join(" || ");
+    return m;
 }
 
 QString fourth_task( const QString& a)
