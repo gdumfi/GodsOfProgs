@@ -129,10 +129,10 @@ QString second_task(const QString& a)
     return dnf;
 }
 
-QString third_task(const QString& a) 
+QString third_task(const QString& a)
 {
 
-    auto numVariables = [&](QString values) 
+    auto numVariables = [&](QString values)
     {
         int n = log2(values.size());
         return n;
@@ -257,6 +257,8 @@ QString third_task(const QString& a)
         return mdnf;
     };
 
+
+
     int num = numVariables(a);
 
     QStringList truthTable = generateTruthTable(num);
@@ -267,8 +269,10 @@ QString third_task(const QString& a)
     QSet<QString> uniq = QSet<QString>(mdnf.begin(), mdnf.end());
     QStringList uniqList = QStringList(uniq.begin(), uniq.end());
 
-    QString m = uniqList.join(" || ");
-    return m;
+    QString mdn;
+    QString mdnff = uniqList.join(" || ");
+    mdn += '(' + mdnff + ')';
+    return mdn;
 }
 
 QString fourth_task( const QString& a)
