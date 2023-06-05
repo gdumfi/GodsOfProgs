@@ -251,20 +251,11 @@ QString third_task(const QString& a)
                 }
             }
 
-            mdnf.append(literals.join(" && "));
+            mdnf.append(literals.join(" U "));
         }
 
         return mdnf;
     };
-
-    auto removeEveryOther = [&](QString v) {
-        for (int i = v.size() - 2; i >= 0; i -= 2) {
-            v.removeAt(i);
-        }
-        return v;
-    };
-
-    QString values = removeEveryOther(a);
 
     int num = numVariables(a);
 
