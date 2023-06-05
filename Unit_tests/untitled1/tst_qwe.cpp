@@ -14,6 +14,7 @@ public:
 private slots:
     void test_case1();
     void test_case2();
+    void test_case4();
 };
 
 qwe::qwe()
@@ -36,6 +37,12 @@ void qwe::test_case2()
 {
     QString params = "1;1;0;1";
     QCOMPARE(second_task(params),"(A&B&~B)");
+}
+
+void qwe::test_case4()
+{
+    QString params = "0;1;1;1;1;1;1";
+    QCOMPARE(fourth_task(params),"(A3+~A2)");
 }
 
 QTEST_APPLESS_MAIN(qwe)
